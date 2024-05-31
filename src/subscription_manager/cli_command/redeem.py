@@ -22,11 +22,16 @@ import subscription_manager.injection as inj
 from subscription_manager.cli import system_exit
 from subscription_manager.cli_command.cli import CliCommand, handle_exception
 from subscription_manager.i18n import ugettext as _
+from subscription_manager.utils import is_simple_content_access
 
 
 class RedeemCommand(CliCommand):
     def __init__(self):
-        shortdesc = _("Attempt to redeem a subscription for a preconfigured system")
+        shortdesc = _(
+            "Deprecated, this command will be removed from the future major releases."
+            " This command is no-op in simple content access mode."
+            " Attempt to redeem a subscription for a preconfigured system"
+        )
         super(RedeemCommand, self).__init__("redeem", shortdesc, False)
 
         self.parser.add_argument(
@@ -59,6 +64,9 @@ class RedeemCommand(CliCommand):
         self.assert_should_be_registered()
         self._validate_options()
 
+        if is_simple_content_access(self.cp):
+            print(_("Warning: This command is no-op in simple content access mode."))
+
         try:
             # FIXME: why just facts and package profile update here?
             # update facts first, if we need to
@@ -73,7 +81,8 @@ class RedeemCommand(CliCommand):
             if response is None:
                 system_exit(os.EX_SOFTWARE, _("Error: Unable to redeem subscription for this system."))
             if response.get("displayMessage"):
-                system_exit(0, response.get("displayMessage"))
+                if not is_simple_content_access(self.cp):
+                    system_exit(0, response.get("displayMessage"))
         except connection.GoneException as ge:
             raise ge
         except connection.RestlibException as e:
