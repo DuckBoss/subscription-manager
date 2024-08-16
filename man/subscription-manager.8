@@ -29,9 +29,9 @@ Subscription Manager performs several key operations:
 .IP
 * It lists both available and used subscriptions.
 .IP
-* It allows administrators to both attach specific subscriptions to a system and remove those subscriptions.
+* It allows administrators to both apply subscriptions to a system and remove those subscriptions.
 .PP
-Subscription Manager can be used to auto-attach subscriptions to a system, as well. The
+The
 .B subscription-manager
 command can even be invoked as part of a kickstart process.
 
@@ -77,55 +77,52 @@ must be passed as system arguments in a non-interactive session.
 2. unregister
 
 .IP
-4. auto-attach
+3. remove
 
 .IP
-5. remove
+4. release
 
 .IP
-6. release
+5. list
 
 .IP
-7. list
+6. refresh
 
 .IP
-8. refresh
+7. environments
 
 .IP
-9. environments
+8. repos
 
 .IP
-10. repos
+9. orgs
 
 .IP
-11. orgs
+10. plugins
 
 .IP
-12. plugins
+11. identity
 
 .IP
-13. identity
+12. facts
 
 .IP
-14. facts
+13. clean
 
 .IP
-15. clean
+14. config
 
 .IP
-16. config
+15. version
 
 .IP
-17. version
+16. status
 
 .IP
-18. status
+17. syspurpose
 
 .IP
-19. syspurpose
-
-.IP
-20. repo-override
+18. repo-override
 
 .RE
 
@@ -281,23 +278,6 @@ command does two important things. Firstly, it will implicitly remove all of the
 
 .PP
 This command has no options.
-
-.SS AUTO-ATTACH OPTIONS
-The
-.B auto-attach
-command sets whether the ability to check, attach, and update subscriptions occurs automatically on the system. Auto-attaching subscriptions checks the currently-installed products, attached subscriptions, and any changes in available subscriptions every four hours using the \fBrhsmcertd\fP daemon.
-
-.TP
-.B --enable
-Enables the auto-attach option for the system. If there is any change in the subscriptions for the system, any subscriptions expire, or any new products are installed, then \fBsubscription-manager\fP detects the changes and automatically attaches the appropriate subscriptions so that the system remains covered.
-
-.TP
-.B --disable
-Disables the auto-attach option for the system. If auto-attach is disabled, then any changes in installed products or subscriptions for the system (including expired subscriptions) must be addressed manually by the administrator.
-
-.TP
-.B --show
-Shows whether auto-attach is enabled on the systems.
 
 .SS REMOVE OPTIONS
 The
@@ -1017,12 +997,11 @@ subscription-manager unregister
 .fi
 .RE
 
-.SS LISTING, ATTACHING, AND REMOVING SUBSCRIPTIONS FOR PRODUCTS
+.SS LISTING AND REMOVING SUBSCRIPTIONS FOR PRODUCTS
 A
 .I subscription
 is essentially the right to install, use, and receive updates for a Red Hat product. (Sometimes multiple individual software products are bundled together into a single subscription.) When a system is registered, the subscription management service is aware of the system and has a list of all of the possible product subscriptions that the system can install and use. A subscription is applied to a system when the system is
-.I attached
-to the subscription pool that makes that product available. A system releases or
+attached to the subscription pool that makes that product available. A system releases or
 .I removes
 that subscription (meaning, it removes that subscription so that another system can use that subscription count).
 
