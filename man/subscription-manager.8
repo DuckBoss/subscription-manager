@@ -29,7 +29,7 @@ Subscription Manager performs several key operations:
 .IP
 * It lists both available and used subscriptions.
 .IP
-* It allows administrators to both apply subscriptions to a system and remove those subscriptions.
+* It allows administrators to apply subscriptions to a system.
 .PP
 The
 .B subscription-manager
@@ -77,56 +77,51 @@ must be passed as system arguments in a non-interactive session.
 2. unregister
 
 .IP
-3. remove
+3. release
 
 .IP
-4. release
+4. list
 
 .IP
-5. list
+5. refresh
 
 .IP
-6. refresh
+6. environments
 
 .IP
-7. environments
+7. repos
 
 .IP
-8. repos
+8. orgs
 
 .IP
-9. orgs
+9. plugins
 
 .IP
-10. plugins
+10. identity
 
 .IP
-11. identity
+11. facts
 
 .IP
-12. facts
+12. clean
 
 .IP
-13. clean
+13. config
 
 .IP
-14. config
+14. version
 
 .IP
-15. version
+15. status
 
 .IP
-16. status
+16. syspurpose
 
 .IP
-17. syspurpose
-
-.IP
-18. repo-override
+17. repo-override
 
 .RE
-
-Following commands were deprecated: unsubscribe
 
 .SS COMMON OPTIONS
 .TP
@@ -278,33 +273,6 @@ command does two important things. Firstly, it will implicitly remove all of the
 
 .PP
 This command has no options.
-
-.SS REMOVE OPTIONS
-The
-.B remove
-command removes a subscription from the system. (This does not uninstall the associated products.)
-
-.TP
-.B --serial=SERIALNUMBER
-Gives the serial number of the subscription certificate for the specific product to remove from the system. Subscription certificates attached to a system are in a certificate, in
-.B /etc/pki/entitlement/<serial_number>.pem.
-To remove multiple subscriptions, use the
-.B --serial
-option multiple times.
-
-.TP
-.B --pool=POOLID
-Removes all subscription certificates for the specified pool id from the system.
-To remove multiple sets of subscriptions, use the
-.B --pool
-option multiple times.
-
-.TP
-.B --all
-Removes
-.I all
-of the subscriptions attached to a system.
-
 
 .SS RELEASE OPTIONS
 The
@@ -880,11 +848,7 @@ Overall Status: Insufficient
 .RE
 
 .SS DEPRECATED COMMANDS
-As the structures of subscription configuration have changed, some of the original management commands have become obsolete. These commands have been replaced with updated commands.
-
-.TP
-.B unsubscribe
-This has been replaced with \fBremove\fP.
+As the structures of subscription configuration have changed, some of the original management commands have become obsolete. Some of these commands have been replaced with updated commands. Deprecated commands, if any, will be listed below.
 
 .SH USAGE
 .B subscription-manager
@@ -997,13 +961,11 @@ subscription-manager unregister
 .fi
 .RE
 
-.SS LISTING AND REMOVING SUBSCRIPTIONS FOR PRODUCTS
+.SS LISTING SUBSCRIPTIONS FOR PRODUCTS
 A
 .I subscription
 is essentially the right to install, use, and receive updates for a Red Hat product. (Sometimes multiple individual software products are bundled together into a single subscription.) When a system is registered, the subscription management service is aware of the system and has a list of all of the possible product subscriptions that the system can install and use. A subscription is applied to a system when the system is
-attached to the subscription pool that makes that product available. A system releases or
-.I removes
-that subscription (meaning, it removes that subscription so that another system can use that subscription count).
+attached to the subscription pool that makes that product available. 
 
 .PP The
 .B list
@@ -1078,21 +1040,6 @@ Ends:		08/31/2015
 .fi
 .RE
 
-.PP
-Removing subscription from a system releases the subscription back into the pool. The system remains registered with the subscription management service. Each product has an identifying X.509 certificate installed with it. To remove a subscription for a specific product, specify the serial number (or numbers, in multiple \fB--serial\fP options) of the certificate:
-
-.RS
-.nf
-subscription-manager remove --serial=1128750306742160
-.fi
-.RE
-
-.PP
-Giving the
-.B remove
-command with the
-.B --all
-option removes every subscription the system has used.
 
 .SS VIEWING LOCAL SUBSCRIPTION & CONTENT PROVIDER INFORMATION
 Red Hat has a hosted environment, through the Customer Portal, that provides centralized access to subscription management and content repositories. However, organizations can use other tools -- like Subscription Manager -- for content hosting and subscription management. With a local content provider, the organization, environments, repositories, and other structural configuration is performed in the content provider. Red Hat Subscription Manager can be used to display this information, using the
