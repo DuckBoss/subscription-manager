@@ -26,10 +26,6 @@ is the command-line based client for the Red Hat Subscription Manager tool.
 Subscription Manager performs several key operations:
 .IP
 * It registers systems to the Red Hat subscription management service and adds the system to the inventory. Once a system is registered, it can receive updates based on its subscriptions to any kind of software products.
-.IP
-* It lists both available and used subscriptions.
-.IP
-* It allows administrators to apply subscriptions to a system.
 .PP
 The
 .B subscription-manager
@@ -77,49 +73,52 @@ must be passed as system arguments in a non-interactive session.
 2. unregister
 
 .IP
-3. release
+3. auto-attach
 
 .IP
-4. list
+4. release
 
 .IP
-5. refresh
+5. list
 
 .IP
-6. environments
+6. refresh
 
 .IP
-7. repos
+7. environments
 
 .IP
-8. orgs
+8. repos
 
 .IP
-9. plugins
+9. orgs
 
 .IP
-10. identity
+10. plugins
 
 .IP
-11. facts
+11. identity
 
 .IP
-12. clean
+12. facts
 
 .IP
-13. config
+13. clean
 
 .IP
-14. version
+14. config
 
 .IP
-15. status
+15. version
 
 .IP
-16. syspurpose
+16. status
 
 .IP
-17. repo-override
+17. syspurpose
+
+.IP
+18. repo-override
 
 .RE
 
@@ -273,6 +272,23 @@ command does two important things. Firstly, it will implicitly remove all of the
 
 .PP
 This command has no options.
+
+.SS AUTO-ATTACH OPTIONS
+The
+.B auto-attach
+command sets whether the ability to check, attach, and update subscriptions occurs automatically on the system. Auto-attaching subscriptions checks the currently-installed products, attached subscriptions, and any changes in available subscriptions every four hours using the \fBrhsmcertd\fP daemon.
+
+.TP
+.B --enable
+Enables the auto-attach option for the system. If there is any change in the subscriptions for the system, any subscriptions expire, or any new products are installed, then \fBsubscription-manager\fP detects the changes and automatically attaches the appropriate subscriptions so that the system remains covered.
+
+.TP
+.B --disable
+Disables the auto-attach option for the system. If auto-attach is disabled, then any changes in installed products or subscriptions for the system (including expired subscriptions) must be addressed manually by the administrator.
+
+.TP
+.B --show
+Shows whether auto-attach is enabled on the systems.
 
 .SS RELEASE OPTIONS
 The
@@ -848,7 +864,7 @@ Overall Status: Insufficient
 .RE
 
 .SS DEPRECATED COMMANDS
-As the structures of subscription configuration have changed, some of the original management commands have become obsolete. Some of these commands have been replaced with updated commands. Deprecated commands, if any, will be listed below.
+No commands are currently deprecated.
 
 .SH USAGE
 .B subscription-manager
