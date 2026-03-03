@@ -163,8 +163,7 @@ class RegisterCommand(UserPassCommand):
         with LiveStatusMessage(_("Uploading DNF profile")):
             try:
                 profile_mgr = inj.require(inj.PROFILE_MANAGER)
-                # 767265: always force an upload of the packages when registering
-                profile_mgr.update_check(self.cp, consumer["uuid"], force=True)
+                profile_mgr.update_check(self.cp, consumer["uuid"])
             except RemoteServerException as err:
                 # When it is not possible to upload profile ATM, then print only error about this
                 # to rhsm.log. The rhsmcertd will try to upload it next time.
@@ -187,9 +186,6 @@ class RegisterCommand(UserPassCommand):
                 # This will only send SIGUSR1 signal, which triggers gathering and uploading
                 # of DNF profile by rhsmcertd. We try to "outsource" this activity to rhsmcertd
                 # server to not block registration process.
-                # Note: rhsmcertd tries to upload profile using Python script and this script
-                # is always triggered with --force-upload CLI option. We ignore report_package_config
-                # configure option here due to BZ: 767265
                 log.debug("Sending SIGUSR1 signal to rhsmcertd process")
                 try:
                     os.kill(rhsmcertd_pid, signal.SIGUSR1)
@@ -346,7 +342,10 @@ class RegisterCommand(UserPassCommand):
             # FIXME: aside from the overhead, should this be cert_action_client.update?
             self.entcertlib.update()
 
-        self._upload_profile(consumer)
+        if conf["rhsm"].get_int("report_package_profile") == 1:
+            self._upload_profile(consumer)
+        else:
+            log.info("Skipping package profile upload due to report_package_profile config setting.")
 
         self._request_validity_check()
 

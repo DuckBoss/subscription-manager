@@ -322,6 +322,36 @@ class CliRegistrationTests(SubManFixture):
                 with self.assertRaises(SystemExit):
                     rc._process_environments(mock_uep, "owner")
 
+    @patch("subscription_manager.cli_command.register.conf")
+    def test_registration_with_package_profile_disabled(self, mock_conf):
+        mock_conf.__getitem__.return_value.get_int.return_value = 0
+        with patch("rhsm.connection.UEPConnection", new_callable=StubUEP) as mock_uep:
+            self.stub_cp_provider.basic_auth_cp = mock_uep
+            cmd = RegisterCommand()
+            cmd._upload_profile = Mock()
+
+            with Capture() as cap:
+                cmd.main(["--force", "--username", "admin", "--password", "admin", "--org", "admin"])
+                output = cap.out
+                self.assertTrue("The system has been registered with ID" in output)
+                self.assertTrue("The registered system name is:" in output)
+                cmd._upload_profile.assert_not_called()
+
+    @patch("subscription_manager.cli_command.register.conf")
+    def test_registration_with_package_profile_enabled(self, mock_conf):
+        mock_conf.__getitem__.return_value.get_int.return_value = 1
+        with patch("rhsm.connection.UEPConnection", new_callable=StubUEP) as mock_uep:
+            self.stub_cp_provider.basic_auth_cp = mock_uep
+            cmd = RegisterCommand()
+            cmd._upload_profile = Mock()
+
+            with Capture() as cap:
+                cmd.main(["--force", "--username", "admin", "--password", "admin", "--org", "admin"])
+                output = cap.out
+                self.assertTrue("The system has been registered with ID" in output)
+                self.assertTrue("The registered system name is:" in output)
+                cmd._upload_profile.assert_called_once()
+
     def test_registration_with_failed_profile_upload(self):
         with patch("rhsm.connection.UEPConnection", new_callable=StubUEP) as mock_uep:
             profile_mgr = inj.require(inj.PROFILE_MANAGER)
